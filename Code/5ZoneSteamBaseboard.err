@@ -1,0 +1,66 @@
+Program Version,EnergyPlus-Windows-64 8.0.0.008, YMD=2015.08.28 13:23,IDD_Version 8.0.0.008
+   ************* Beginning Zone Sizing Calculations
+   ** Warning ** CheckUsedConstructions: There are 5 nominally unused constructions in input.
+   **   ~~~   ** For explicit details on each unused construction, use Output:Diagnostics,DisplayExtraWarnings;
+   ************* Beginning System Sizing Calculations
+   ************* Testing Individual Branch Integrity
+   ************* All Branches passed integrity testing
+   ************* Testing Individual Supply Air Path Integrity
+   ************* All Supply Air Paths passed integrity testing
+   ************* Testing Individual Return Air Path Integrity
+   ************* All Return Air Paths passed integrity testing
+   ************* No node connection errors were found.
+   ************* Beginning Simulation
+   ** Warning ** ControlCompOutput: Maximum iterations exceeded for ZoneHVAC:Baseboard:RadiantConvective:Steam = SPACE1-1 BASEBOARD
+   **   ~~~   ** ... Load met       = 247.48703 W.
+   **   ~~~   ** ... Load requested = 247.79536 W.
+   **   ~~~   ** ... Error          = 0.12442991 %.
+   **   ~~~   ** ... Tolerance      = 0.10000000 %.
+   **   ~~~   ** ... Error          = (Load met - Load requested) / MAXIMUM(Load requested, 100)
+   **   ~~~   ** ... Actuated Node Mass Flow Rate =1.289512105E-004 kg/s
+   **   ~~~   **  Environment=Chicago Ohare Intl Ap IL USA TMY3 WMO#=725300, at Simulation time=01/19 16:45 - 17:00
+   ** Warning ** ControlCompOutput: Maximum iterations exceeded for ZoneHVAC:Baseboard:RadiantConvective:Steam = SPACE3-1 BASEBOARD
+   **   ~~~   ** ... Load met       = 122.32973 W.
+   **   ~~~   ** ... Load requested = 123.03008 W.
+   **   ~~~   ** ... Error          = 0.56925174 %.
+   **   ~~~   ** ... Tolerance      = 0.10000000 %.
+   **   ~~~   ** ... Error          = (Load met - Load requested) / MAXIMUM(Load requested, 100)
+   **   ~~~   ** ... Actuated Node Mass Flow Rate =6.235965097E-005 kg/s
+   **   ~~~   **  Environment=Chicago Ohare Intl Ap IL USA TMY3 WMO#=725300, at Simulation time=01/20 17:15 - 17:20
+   ** Warning ** GetDensityGlycol: Temperature is out of range (too high) for fluid [WATER] density **
+   **   ~~~   ** ..Called From:PlantPumps:CalcPumps:,Temperature=[100.97], supplied data range=[0.00,100.00]
+   **   ~~~   **  Environment=Chicago Ohare Intl Ap IL USA TMY3 WMO#=725300, at Simulation time=01/27 06:23 - 06:30
+   ************* Simulation Error Summary *************
+   *************
+   ************* ===== Recurring Error Summary =====
+   ************* The following recurring error messages occurred.
+   *************
+   *************  ** Warning ** ControlCompOutput: Maximum iterations error for ZoneHVAC:Baseboard:RadiantConvective:Steam = SPACE1-1 BASEBOARD
+   *************  **   ~~~   **   This error occurred 10 total times;
+   *************  **   ~~~   **   during Warmup 0 times;
+   *************  **   ~~~   **   during Sizing 0 times.
+   *************  **   ~~~   **   Max=0.494548 %  Min=0.12443 %
+   *************
+   *************  ** Warning ** ControlCompOutput: Maximum iterations error for ZoneHVAC:Baseboard:RadiantConvective:Steam = SPACE3-1 BASEBOARD
+   *************  **   ~~~   **   This error occurred 22 total times;
+   *************  **   ~~~   **   during Warmup 0 times;
+   *************  **   ~~~   **   during Sizing 0 times.
+   *************  **   ~~~   **   Max=0.849981 %  Min=0.151145 %
+   *************
+   *************  ** Warning ** GetDensityGlycol: Temperature out of range (too high) for fluid [WATER] density **
+   *************  **   ~~~   **   This error occurred 372 total times;
+   *************  **   ~~~   **   during Warmup 0 times;
+   *************  **   ~~~   **   during Sizing 0 times.
+   *************  **   ~~~   **   Max=105.452733 {C}  Min=100.219066 {C}
+   *************
+   *************
+   ************* ===== Final Error Summary =====
+   ************* The following error categories occurred.  Consider correcting or noting.
+   ************* Nominally Unused Constructions
+   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause
+   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm
+   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).
+   *************
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 1 Warning; 0 Severe Errors.
+   ************* EnergyPlus Completed Successfully-- 405 Warning; 0 Severe Errors; Elapsed Time=00hr 00min  9.87sec
