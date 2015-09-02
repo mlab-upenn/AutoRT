@@ -8,7 +8,7 @@ filename = '5ZoneSteamBaseboard.csv';
 % First 48 numeric entries in the excel file correspond to design days.
 % These must be excluded. Higher start index can be chosen to account for
 % autoregrssive part
-OrderOfAR = 4; % less than 24 here
+OrderOfAR = 0; % less than 24 here
 StartIndex = 242;
 
 %% Organize the data
@@ -20,13 +20,18 @@ InputData = {};
 % Specify the features from EnergyPlus .idf output variables
 % TrainingData{end+1}.Name = '';
 InputData{end+1}.Name = 'Environment:Site Outdoor Air Drybulb Temperature [C](Hourly)';
-InputData{end+1}.Name = 'Environment:Site Direct Solar Radiation Rate per Area [W/m2](Hourly)';
+% InputData{end+1}.Name = 'SPACE1-1:Zone Air System Sensible Heating Rate [W](Hourly)';
+% InputData{end+1}.Name = 'SPACE1-1:Zone Air Heat Balance Air Energy Storage Rate [W](Hourly)';
+% InputData{end+1}.Name = 'SPACE1-1:Zone Total Internal Total Heating Rate [W](Hourly)';
+% InputData{end+1}.Name = 'Environment:Site Direct Solar Radiation Rate per Area [W/m2](Hourly)';
+InputData{end+1}.Name = 'FRONT-1:Surface Outside Face Incident Solar Radiation Rate per Area [W/m2](Hourly)';
 InputData{end+1}.Name = 'Environment:Site Outdoor Air Relative Humidity [%](Hourly)';
 InputData{end+1}.Name = 'Environment:Site Wind Speed [m/s](Hourly)';
 InputData{end+1}.Name = 'Environment:Site Wind Direction [deg](Hourly)';
 InputData{end+1}.Name = 'SPACE1-1:Zone People Occupant Count [](Hourly)';
 InputData{end+1}.Name = 'SPACE1-1:Zone Lights Total Heating Energy [J](Hourly)';
 InputData{end+1}.Name = 'SPACE1-1 BASEBOARD:Baseboard Total Heating Rate [W](Hourly)';
+
 
 for idx = 1:size(InputData,2)
     for idy = 1:size(RawData,2)
@@ -38,7 +43,18 @@ end
 
 NoOfDataPoints = size(InputData{1}.Data,1);
 
-% Training Features with autoregressive contribution
+for idx = 1:OrderOfAR
+    for idname = 1:size(InputData,2)
+        for idy = 1:size(RawData,2)
+            if strcmp(RawData{1,idy}, InputData{idname}.Name)
+                InputData{end+1}.Name = [InputData{idname}.Name '(k-' num2str(idx) ')']; %#ok<SAGROW>
+                InputData{end}.Data = RawData(StartIndex-idx:StartIndex-idx+NoOfDataPoints-1,idy);
+            end
+        end
+    end
+end
+
+% Training Features for previous time stances of desired output
 % 'SPACE1-1:Zone Air Temperature [C](Hourly)';
 
 ARVariable.Name = 'SPACE1-1:Zone Air Temperature [C](Hourly)';
@@ -46,8 +62,7 @@ ARVariable.Name = 'SPACE1-1:Zone Air Temperature [C](Hourly)';
 for idx = 1:OrderOfAR
     for idy = 1:size(RawData,2)
         if strcmp(RawData{1,idy}, ARVariable.Name)
-%             ARVariable.Data = RawData(50:end,idy);
-            InputData{end+1}.Name = [ARVariable.Name '(k-' num2str(idx) ')'];
+            InputData{end+1}.Name = [ARVariable.Name '(k-' num2str(idx) ')']; %#ok<SAGROW>
             InputData{end}.Data = RawData(StartIndex-idx:StartIndex-idx+NoOfDataPoints-1,idy);
         end
     end
@@ -104,21 +119,11 @@ TestingInput = Input(1+24*TrainingDays:end,:);
 Output = cell2mat(OutputData{1}.Data);
 TrainingOutput = Output(1:24*TrainingDays,:);
 
-%% Optimal ARMAX model
-% Caution training data without autoregression features should be used
-% i.e. OrderOfAR = 0;
-
-% ARMAXTrainingdata = iddata(TrainingOutput, TrainingInput, 3600);
-% ARMAXTestingdata = iddata(TestingOutput, TestingInput, 3600);
-% 
-% LossARMAX = arxstruc(ARMAXTrainingdata, ARMAXTestingdata, struc(1:10,1:10,0));
-% bestARMAXOrder = selstruc(LossARMAX,0); % best ARMAX order
-
 %% Fit regression tree
 
-rtree = fitrtree(TrainingInput, TrainingOutput, 'MinLeafSize',10);
+rtree = fitrtree(TrainingInput, TrainingOutput, 'MinLeafSize',20);
 [~,~,~,bestLevel] = cvloss(rtree, 'SubTrees', 'all', 'KFold', 5);
-view(rtree, 'Mode', 'graph');
+% view(rtree, 'Mode', 'graph');
 
 prunedrtree = prune(rtree, 'Level', bestLevel);
 % view(prunedtree, 'Mode', 'graph');
@@ -146,4 +151,7 @@ h3 = plot(1:length(ActualOutput), brtreeOutput, '--g');
 % h4 = plot(1:length(ActualOutput), ActualOutput, 'b');
 legend([h1, h2, h3], 'Actual', ['Single Tree ' num2str(rtreeNRMSE,2)], ['Boosted Tree ' num2str(brtreeNRMSE,2)])
 
+% figure; hold on;
+% plot(TrainingInput(:,2)/50, 'r');
+% plot(TrainingOutput(:,1), 'b')
 

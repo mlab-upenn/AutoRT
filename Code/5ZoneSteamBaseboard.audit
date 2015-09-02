@@ -3290,78 +3290,84 @@
    3281 
    3282   Output:Variable,*,Zone Air Temperature,Hourly;
    3283 
-   3284 !  Output:Variable,*,Zone Air System Sensible Cooling Rate,Hourly;
+   3284   Output:Variable,FRONT-1,Surface Outside Face Incident Solar Radiation Rate per Area,Hourly;
    3285 
-   3286 !  Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
+   3286 !  Output:Variable,*,Zone Air System Sensible Cooling Rate,Hourly;
    3287 
-   3288 !  Output:Variable,*,Zone Predicted Sensible Load to Heating Setpoint Heat Transfer Rate,Hourly;
+   3288   Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
    3289 
-   3290 !  Output:Variable,*,Zone Predicted Sensible Load to Cooling Setpoint Heat Transfer Rate,Hourly;
+   3290   Output:Variable,*,Zone Air Heat Balance Air Energy Storage Rate,Hourly;
    3291 
-   3292   Output:Variable,*,Baseboard Total Heating Rate,Hourly;
+   3292   Output:Variable,*,Zone Total Internal Total Heating Rate,Hourly;
    3293 
-   3294 !  Output:Variable,*,Baseboard Total Heating Rate,Hourly;
+   3294 !  Output:Variable,*,Zone Predicted Sensible Load to Heating Setpoint Heat Transfer Rate,Hourly;
    3295 
-   3296 !  Output:Variable,*,Baseboard Steam Mass Flow Rate,Hourly;
+   3296 !  Output:Variable,*,Zone Predicted Sensible Load to Cooling Setpoint Heat Transfer Rate,Hourly;
    3297 
-   3298 !  Output:Variable,*,Baseboard Steam Inlet Temperature,Hourly;
+   3298   Output:Variable,*,Baseboard Total Heating Rate,Hourly;
    3299 
-   3300 !  Output:Variable,*,Baseboard Steam Outlet Temperature,Hourly;
+   3300 !  Output:Variable,*,Baseboard Total Heating Rate,Hourly;
    3301 
-   3302 !  Output:Variable,*,Heating Coil Heating Rate,Hourly;
+   3302 !  Output:Variable,*,Baseboard Steam Mass Flow Rate,Hourly;
    3303 
-   3304 !  Output:Variable,*,Heating Coil Steam Mass Flow Rate,Hourly;
+   3304 !  Output:Variable,*,Baseboard Steam Inlet Temperature,Hourly;
    3305 
-   3306 !  Output:Variable,*,Cooling Coil Total Cooling Rate,Hourly;
+   3306 !  Output:Variable,*,Baseboard Steam Outlet Temperature,Hourly;
    3307 
-   3308 ! Reporting NODES Values
+   3308 !  Output:Variable,*,Heating Coil Heating Rate,Hourly;
    3309 
-   3310 !  Output:Variable,VAV SYS 1 Air Loop Outlet,System Node Temperature,hourly;
+   3310 !  Output:Variable,*,Heating Coil Steam Mass Flow Rate,Hourly;
    3311 
-   3312 !  Output:Variable,VAV SYS 1 Air Loop Outlet,System Node Setpoint Temperature,hourly;
+   3312 !  Output:Variable,*,Cooling Coil Total Cooling Rate,Hourly;
    3313 
-   3314 !  Output:Variable,VAV SYS 1 Air Loop Outlet,System Node Mass Flow Rate,hourly;
+   3314 ! Reporting NODES Values
    3315 
-   3316 !  Output:Variable,VAV SYS 1 Heating Coil Outlet,System Node Temperature,hourly;
+   3316 !  Output:Variable,VAV SYS 1 Air Loop Outlet,System Node Temperature,hourly;
    3317 
-   3318 !  Output:Variable,VAV SYS 1 Heating Coil Outlet,System Node Setpoint Temperature,hourly;
+   3318 !  Output:Variable,VAV SYS 1 Air Loop Outlet,System Node Setpoint Temperature,hourly;
    3319 
-   3320 !  Output:Variable,VAV SYS 1 Cooling Coil Outlet,System Node Temperature,hourly;
+   3320 !  Output:Variable,VAV SYS 1 Air Loop Outlet,System Node Mass Flow Rate,hourly;
    3321 
-   3322 !  Output:Variable,VAV SYS 1 Cooling Coil Outlet,System Node Setpoint Temperature,hourly;
+   3322 !  Output:Variable,VAV SYS 1 Heating Coil Outlet,System Node Temperature,hourly;
    3323 
-   3324 !  Output:Variable,VAV SYS 1 Mixed Air Outlet,System Node Temperature,hourly;
+   3324 !  Output:Variable,VAV SYS 1 Heating Coil Outlet,System Node Setpoint Temperature,hourly;
    3325 
-   3326 !  Output:Meter,Fans:Electricity,Hourly;
+   3326 !  Output:Variable,VAV SYS 1 Cooling Coil Outlet,System Node Temperature,hourly;
    3327 
-   3328 !  Output:Meter,Electricity:HVAC,Hourly;
+   3328 !  Output:Variable,VAV SYS 1 Cooling Coil Outlet,System Node Setpoint Temperature,hourly;
    3329 
-   3330 !  Output:Meter,Electricity:Plant,Hourly;
+   3330 !  Output:Variable,VAV SYS 1 Mixed Air Outlet,System Node Temperature,hourly;
    3331 
-   3332 !  Output:Meter,Electricity:Facility,Hourly;
+   3332 !  Output:Meter,Fans:Electricity,Hourly;
    3333 
-   3334 !  Output:Meter,Heating:Gas,Hourly;
+   3334 !  Output:Meter,Electricity:HVAC,Hourly;
    3335 
-   3336 !  Output:Meter,Gas:Plant,Hourly;
+   3336 !  Output:Meter,Electricity:Plant,Hourly;
    3337 
-   3338 !  Output:Meter,Gas:Facility,Hourly;
+   3338 !  Output:Meter,Electricity:Facility,Hourly;
    3339 
-   3340   Output:VariableDictionary,Regular;
+   3340 !  Output:Meter,Heating:Gas,Hourly;
    3341 
-   3342   Output:Surfaces:Drawing,dxf;
+   3342 !  Output:Meter,Gas:Plant,Hourly;
    3343 
-   3344   OutputControl:Table:Style,
-   3345     HTML;                    !- Column Separator
-   3346 
-   3347   Output:Table:SummaryReports,
-   3348     AllSummary;              !- Report 1 Name
+   3344 !  Output:Meter,Gas:Facility,Hourly;
+   3345 
+   3346   Output:VariableDictionary,Regular;
+   3347 
+   3348   Output:Surfaces:Drawing,dxf;
    3349 
+   3350   OutputControl:Table:Style,
+   3351     HTML;                    !- Column Separator
+   3352 
+   3353   Output:Table:SummaryReports,
+   3354     AllSummary;              !- Report 1 Name
+   3355 
   Processing Input Data File (in.idf) -- Complete
   Maximum number of Alpha IDF Args=          78
   Maximum number of Numeric IDF Args=          16
-  Number of IDF "Lines"=         300
+  Number of IDF "Lines"=         304
   Number of Defaulted Fields=          65
-  Number of Fields with Defaults=         636
+  Number of Fields with Defaults=         644
   Number of Autosized Fields=          37
   Number of Autosizable Fields =          57
   Number of Autocalculated Fields=          19
@@ -3468,7 +3474,7 @@
  numCompSizeTableEntry=          45
  NumOfRVariable=        5407
  NumOfRVariable(Total)=        5407
- NumOfRVariable(Actual)=          67
+ NumOfRVariable(Actual)=          86
  NumOfRVariable(Summed)=          49
  NumOfRVariable(Meter)=          44
  NumOfIVariable=         258
@@ -3487,8 +3493,8 @@
  InstMeterCacheSize=        1000
  ClippingAlgorithm=SutherlandHodgman
  MonthlyFieldSetInputCount=           0
- NumConsideredOutputVariables=           9
- MaxConsideredOutputVariables=           9
+ NumConsideredOutputVariables=          13
+ MaxConsideredOutputVariables=          13
  numActuatorsUsed=           0
  numEMSActuatorsAvailable=           0
  maxEMSActuatorsAvailable=           0

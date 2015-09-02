@@ -3281,9 +3281,15 @@
 
   Output:Variable,*,Zone Air Temperature,Hourly;
 
+  Output:Variable,FRONT-1,Surface Outside Face Incident Solar Radiation Rate per Area,Hourly;
+
 !  Output:Variable,*,Zone Air System Sensible Cooling Rate,Hourly;
 
-!  Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
+  Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
+
+  Output:Variable,*,Zone Air Heat Balance Air Energy Storage Rate,Hourly;
+
+  Output:Variable,*,Zone Total Internal Total Heating Rate,Hourly;
 
 !  Output:Variable,*,Zone Predicted Sensible Load to Heating Setpoint Heat Transfer Rate,Hourly;
 

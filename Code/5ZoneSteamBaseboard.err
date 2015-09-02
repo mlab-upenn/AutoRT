@@ -1,4 +1,4 @@
-Program Version,EnergyPlus-Windows-64 8.0.0.008, YMD=2015.08.28 13:23,IDD_Version 8.0.0.008
+Program Version,EnergyPlus-Windows-64 8.0.0.008, YMD=2015.08.31 15:10,IDD_Version 8.0.0.008
    ************* Beginning Zone Sizing Calculations
    ** Warning ** CheckUsedConstructions: There are 5 nominally unused constructions in input.
    **   ~~~   ** For explicit details on each unused construction, use Output:Diagnostics,DisplayExtraWarnings;
@@ -63,4 +63,4 @@ Program Version,EnergyPlus-Windows-64 8.0.0.008, YMD=2015.08.28 13:23,IDD_Versio
    *************
    ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
    ************* EnergyPlus Sizing Error Summary. During Sizing: 1 Warning; 0 Severe Errors.
-   ************* EnergyPlus Completed Successfully-- 405 Warning; 0 Severe Errors; Elapsed Time=00hr 00min  9.87sec
+   ************* EnergyPlus Completed Successfully-- 405 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 11.03sec
