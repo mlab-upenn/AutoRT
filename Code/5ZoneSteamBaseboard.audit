@@ -3274,37 +3274,37 @@
    3265     VAV SYS 1 Heating Coil Outlet,  !- Air Inlet Node Name
    3266     VAV SYS 1 Air Loop Outlet;  !- Air Outlet Node Name
    3267 
-   3268   Output:Variable,*,Site Outdoor Air Drybulb Temperature,Hourly;
+   3268   Output:Variable,*,Site Outdoor Air Drybulb Temperature,Timestep;
    3269 
-   3270   Output:Variable,*,Site Direct Solar Radiation Rate per Area,Hourly;
+   3270   Output:Variable,*,Site Direct Solar Radiation Rate per Area,Timestep;
    3271 
-   3272   Output:Variable,*,Site Outdoor Air Relative Humidity,Hourly;
+   3272   Output:Variable,*,Site Outdoor Air Relative Humidity,Timestep;
    3273 
-   3274   Output:Variable,*,Site Wind Speed,Hourly;
+   3274   Output:Variable,*,Site Wind Speed,Timestep;
    3275 
-   3276   Output:Variable,*,Site Wind Direction,Hourly;
+   3276   Output:Variable,*,Site Wind Direction,Timestep;
    3277 
-   3278   Output:Variable,*,Zone People Occupant Count,Hourly;
+   3278   Output:Variable,*,Zone People Occupant Count,Timestep;
    3279 
-   3280   Output:Variable,*,Zone Lights Total Heating Energy,Hourly;
+   3280   Output:Variable,*,Zone Lights Total Heating Energy,Timestep;
    3281 
-   3282   Output:Variable,*,Zone Air Temperature,Hourly;
+   3282   Output:Variable,*,Zone Air Temperature,Timestep;
    3283 
-   3284   Output:Variable,FRONT-1,Surface Outside Face Incident Solar Radiation Rate per Area,Hourly;
+   3284   Output:Variable,FRONT-1,Surface Outside Face Incident Solar Radiation Rate per Area,Timestep;
    3285 
-   3286 !  Output:Variable,*,Zone Air System Sensible Cooling Rate,Hourly;
+   3286 !  Output:Variable,*,Zone Air System Sensible Cooling Rate,Timestep;
    3287 
-   3288   Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
+   3288   Output:Variable,*,Zone Air System Sensible Heating Rate,Timestep;
    3289 
-   3290   Output:Variable,*,Zone Air Heat Balance Air Energy Storage Rate,Hourly;
+   3290   Output:Variable,*,Zone Air Heat Balance Air Energy Storage Rate,Timestep;
    3291 
-   3292   Output:Variable,*,Zone Total Internal Total Heating Rate,Hourly;
+   3292   Output:Variable,*,Zone Total Internal Total Heating Rate,Timestep;
    3293 
    3294 !  Output:Variable,*,Zone Predicted Sensible Load to Heating Setpoint Heat Transfer Rate,Hourly;
    3295 
    3296 !  Output:Variable,*,Zone Predicted Sensible Load to Cooling Setpoint Heat Transfer Rate,Hourly;
    3297 
-   3298   Output:Variable,*,Baseboard Total Heating Rate,Hourly;
+   3298   Output:Variable,*,Baseboard Total Heating Rate,Timestep;
    3299 
    3300 !  Output:Variable,*,Baseboard Total Heating Rate,Hourly;
    3301 

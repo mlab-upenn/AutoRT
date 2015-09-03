@@ -3265,37 +3265,37 @@
     VAV SYS 1 Heating Coil Outlet,  !- Air Inlet Node Name
     VAV SYS 1 Air Loop Outlet;  !- Air Outlet Node Name
 
-  Output:Variable,*,Site Outdoor Air Drybulb Temperature,Hourly;
+  Output:Variable,*,Site Outdoor Air Drybulb Temperature,Timestep;
 
-  Output:Variable,*,Site Direct Solar Radiation Rate per Area,Hourly;
+  Output:Variable,*,Site Direct Solar Radiation Rate per Area,Timestep;
 
-  Output:Variable,*,Site Outdoor Air Relative Humidity,Hourly;
+  Output:Variable,*,Site Outdoor Air Relative Humidity,Timestep;
 
-  Output:Variable,*,Site Wind Speed,Hourly;
+  Output:Variable,*,Site Wind Speed,Timestep;
 
-  Output:Variable,*,Site Wind Direction,Hourly;
+  Output:Variable,*,Site Wind Direction,Timestep;
 
-  Output:Variable,*,Zone People Occupant Count,Hourly;
+  Output:Variable,*,Zone People Occupant Count,Timestep;
 
-  Output:Variable,*,Zone Lights Total Heating Energy,Hourly;
+  Output:Variable,*,Zone Lights Total Heating Energy,Timestep;
 
-  Output:Variable,*,Zone Air Temperature,Hourly;
+  Output:Variable,*,Zone Air Temperature,Timestep;
 
-  Output:Variable,FRONT-1,Surface Outside Face Incident Solar Radiation Rate per Area,Hourly;
+  Output:Variable,FRONT-1,Surface Outside Face Incident Solar Radiation Rate per Area,Timestep;
 
-!  Output:Variable,*,Zone Air System Sensible Cooling Rate,Hourly;
+!  Output:Variable,*,Zone Air System Sensible Cooling Rate,Timestep;
 
-  Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
+  Output:Variable,*,Zone Air System Sensible Heating Rate,Timestep;
 
-  Output:Variable,*,Zone Air Heat Balance Air Energy Storage Rate,Hourly;
+  Output:Variable,*,Zone Air Heat Balance Air Energy Storage Rate,Timestep;
 
-  Output:Variable,*,Zone Total Internal Total Heating Rate,Hourly;
+  Output:Variable,*,Zone Total Internal Total Heating Rate,Timestep;
 
 !  Output:Variable,*,Zone Predicted Sensible Load to Heating Setpoint Heat Transfer Rate,Hourly;
 
 !  Output:Variable,*,Zone Predicted Sensible Load to Cooling Setpoint Heat Transfer Rate,Hourly;
 
-  Output:Variable,*,Baseboard Total Heating Rate,Hourly;
+  Output:Variable,*,Baseboard Total Heating Rate,Timestep;
 
 !  Output:Variable,*,Baseboard Total Heating Rate,Hourly;
 
