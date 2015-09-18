@@ -1,0 +1,27 @@
+*** BCVTB client log file.
+*************************.
+Writing to socket at time = 8.640000e+04
+Assembling buffer.
+Write to socket with fd = 17
+Buffer        = 2 0 32 0 0 8.640000000000000e+04 2.206956560753105e+05 2.400000000000000e+01 5.000000000000000e+00 6.700000000000000e+00 6.700000000000000e+00 8.095163868068178e+01 2.601838774739328e+01 2.583366667839616e+01 2.720710557356022e+01 2.680070903544921e+01 2.589294780824272e+01 2.634795775665333e+01 2.579709977347080e+01 2.463253982494731e+01 2.580930350975360e+01 2.458488140613732e+01 2.709475856576877e+01 2.609959606359337e+01 2.708296035380055e+01 2.613525428274865e+01 2.640163162476615e+01 2.479108249141868e+01 2.649239982199924e+01 2.436885872297484e+01 2.757373819354959e+01 2.630000000000000e+01 2.210849452641995e+01 1.500000000000000e+00 3.200000000000000e+02 7.000000000000000e+01 1.560000000000000e+01 8.220000000000000e+01 
+
+Wrote 738 characters to socket.
+Reading from socket.
+In readbufferfromsocket: Read 4 chars, maximum is 142.
+Error while disassembling the header of the buffer.
+Disassembled buffer.
+Finished exchanging data with socket: simTimRea=2.066400e+05, flag=1.
+Assembling buffer.
+Write to socket with fd = 17
+Buffer        = 2 -20 
+
+Error writing to socket: Return value = -1.
+Error writing to socket: Broken pipe
+sendclientmessage wrote flag -20, return value = -1.
+Assembling buffer.
+Write to socket with fd = 17
+Buffer        = 2 -1 
+
+Error writing to socket: Return value = -1.
+Error writing to socket: Broken pipe
+sendclientmessage wrote flag -1, return value = -1.
