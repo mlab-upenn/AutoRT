@@ -100,9 +100,9 @@
   RunPeriod,
     ,                        !- Name
     7,                       !- Begin Month
-    17,                       !- Begin Day of Month
+    10,                       !- Begin Day of Month
     7,                       !- End Month
-    17,                      !- End Day of Month
+    25,                      !- End Day of Month
     Thursday,                !- Day of Week for Start Day 2012 Sun 2013 Tue
     No,                      !- Use Weather File Holidays and Special Days
     No,                      !- Use Weather File Daylight Saving Period

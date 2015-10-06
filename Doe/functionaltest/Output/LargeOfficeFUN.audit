@@ -109,9 +109,9 @@
     100   RunPeriod,
     101     ,                        !- Name
     102     7,                       !- Begin Month
-    103     17,                       !- Begin Day of Month
+    103     10,                       !- Begin Day of Month
     104     7,                       !- End Month
-    105     17,                      !- End Day of Month
+    105     25,                      !- End Day of Month
     106     Thursday,                !- Day of Week for Start Day 2012 Sun 2013 Tue
     107     No,                      !- Use Weather File Holidays and Special Days
     108     No,                      !- Use Weather File Daylight Saving Period

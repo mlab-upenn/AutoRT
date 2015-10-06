@@ -45,8 +45,9 @@ end
 %% The main simulation loop
 
 EPTimeStep = 12;
-SimDays = 1;
-deltaT = EPTimeStep*60;  % time step = 12 minutes
+SimDays = 16;
+%deltaT = EPTimeStep*60;  % time step = 12 minutes
+deltaT = (60/EPTimeStep)*60;
 kStep = 1;  % current simulation step
 MAXSTEPS = SimDays*24*EPTimeStep;  % max simulation time = 7 days
 
@@ -79,71 +80,133 @@ while kStep <= MAXSTEPS
     % Parse it to obtain building outputs
     [flag, eptime, outputs] = mlepDecodePacket(packet);
     if flag ~= 0, break; end
-        
+
     % BEGIN Compute next set-points
     dayTime = mod(eptime, 86400);  % time in current day
-    if (dayTime >= 6*3600) && (dayTime <= 18*3600)
-        % It is day time (6AM-6PM)
+    
+    SP = [24 6.7 0.7];
+
+    
+    % Baseline Schedule.
+    if(dayTime <= 5*3600)
         
-        %disp(dayTime/3600);
-        
-        % The Heating set-point: day -> 20, night -> 16
-        
-        SP = [24 6.7 0.7];
-        
-        % Functional test during DR event (3PM-5PM)
-        if(dayTime >= 15*3600) && (dayTime <= 17*3600)
-        
-            newclg = clglow + ((clghigh-clglow)*rand(1,1));
-            while(abs(newclg-oldclg)<minchange)
-                newclg = clglow + ((clghigh-clglow)*rand(1,1));
-            end
-            
-            newcw = cwlow + ((cwhigh-cwlow)*rand(1,1));
-            while(abs(newcw-oldcw)<minchange)
-                newcw = cwlow + ((cwhigh-cwlow)*rand(0,1));                                                    
-            end
-            
-            newlit = lilow + ((lihigh-lilow)*rand(1,1));
-            while(abs(newlit-oldlit)<0.2)
-            newlit = lilow + ((lihigh-lilow)*rand(0,1));                                                    
-            end
-            
-            if(isempty(newlit))
-                newlit=oldlit;
-            end
-            
-            if(isempty(newcw))
-                newcw=oldcw;
-            end
-            
-            if(isempty(newclg))
-                newclg=oldclg;
-            end
-            
-            SP = [newclg newcw newlit];
-            
-        end
-    else
-        % The Heating set-point: day -> 20, night -> 16
-        % The Cooling set-point: night -> 30
-        SP = [27 6.7 0.7];
+        newclg = 27;
+        newcw = 6.7;
+        newlit = 0.05;
+        SP = [newclg newcw newlit];
     end
-    % END Compute next set-points
+    if((dayTime > 5*3600)&&(dayTime <= 6*3600))
+        
+        newclg = 27;
+        newcw = 6.7;
+        newlit = 0.1;
+        SP = [newclg newcw newlit];
+    end
+    
+    if((dayTime > 6*3600)&&(dayTime <= 7*3600))
+        
+        newclg = 24;
+        newcw = 6.7;
+        newlit = 0.1;
+        SP = [newclg newcw newlit];
+    end
+    
+    if((dayTime > 7*3600)&&(dayTime <= 8*3600))
+        
+        newclg = 24;
+        newcw = 6.7;
+        newlit = 0.3;
+        SP = [newclg newcw newlit];
+    end
+    if((dayTime > 8*3600)&&(dayTime <= 15*3600))
+        
+        newclg = 24;
+        newcw = 6.7;
+        newlit = 0.9;
+        SP = [newclg newcw newlit];
+    end
+    % Functional test during 3PM-5PM
+    if(dayTime > 15*3600) && (dayTime <= 17*3600)
+        
+        newclg = clglow + ((clghigh-clglow)*rand(1,1));
+%         while(abs(newclg-oldclg)<minchange)
+%             newclg = clglow + ((clghigh-clglow)*rand(1,1));
+%         end
+        
+        newcw = cwlow + ((cwhigh-cwlow)*rand(1,1));
+%         while(abs(newcw-oldcw)<minchange)
+%             newcw = cwlow + ((cwhigh-cwlow)*rand(0,1));
+%         end
+        
+        newlit = lilow + ((lihigh-lilow)*rand(1,1));
+%         while(abs(newlit-oldlit)<0.2)
+%             newlit = lilow + ((lihigh-lilow)*rand(0,1));
+%         end
+        
+        if(isempty(newlit))
+            newlit=oldlit;
+        end
+        
+        if(isempty(newcw))
+            newcw=oldcw;
+        end
+        
+        if(isempty(newclg))
+            newclg=oldclg;
+        end
+        
+        SP = [newclg newcw newlit];
+        
+    end
+    if((dayTime > 17*3600)&&(dayTime <= 18*3600))
+        
+        newclg = 24;
+        newcw = 6.7;
+        newlit = 0.7;
+        SP = [newclg newcw newlit];
+    end
+    if((dayTime > 18*3600)&&(dayTime <= 20*3600))
+        
+        newclg = 24;
+        newcw = 6.7;
+        newlit = 0.5;
+        SP = [newclg newcw newlit];
+    end
+    if((dayTime > 20*3600)&&(dayTime <= 22*3600))
+        
+        newclg = 24;
+        newcw = 6.7;
+        newlit = 0.3;
+        SP = [newclg newcw newlit];
+    end
+    if((dayTime > 22*3600)&&(dayTime <= 23*3600))
+        
+        newclg = 27;
+        newcw = 6.7;
+        newlit = 0.1;
+        SP = [newclg newcw newlit];
+    end
+    if((dayTime > 23*3600)&&(dayTime <= 24*3600))
+        
+        newclg = 27;
+        newcw = 6.7;
+        newlit = 0.05;
+        SP = [newclg newcw newlit];
+    end
     
     oldclg = SP(1);
     oldcw = SP(2);
     oldlit = SP(3);
     
     % also plot the set-points as they are sent ot E+.
-
+    
     yyclg(kStep) = SP(1);
     yycw(kStep) = SP(2);
     yylit(kStep) = SP(3);
-
+    
     % Write to inputs of E+
-    ep.write(mlepEncodeRealData(VERNUMBER, 0, (kStep-1)*deltaT, SP));    
-
+    ep.write(mlepEncodeRealData(VERNUMBER, 0, (kStep-1)*deltaT, SP));
+    
     % Save to logdata
     logdata(kStep, :) = outputs;
     
@@ -168,4 +231,5 @@ figure
 plot(1:MAXSTEPS,yycw);
 figure
 plot(1:MAXSTEPS,yylit);
-
+figure
+plot(1:MAXSTEPS,logdata(:,1));
