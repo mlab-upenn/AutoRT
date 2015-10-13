@@ -196,26 +196,26 @@ legend([h2, h3], ['Single Tree ' num2str(rtreeNRMSE,2)], ['Boosted Tree ' num2st
 
 %% Predict results on training set
 
-ActualOutput = TrainingOutput;
-
-rtreeOutput = predict(prunedrtree, TrainingInput);
-brtreeOutput = predict(brtree, TrainingInput);
-
-rtreeNRMSE = sqrt(mean((rtreeOutput-ActualOutput).^2))/mean(ActualOutput);
-brtreeNRMSE = sqrt(mean((brtreeOutput-ActualOutput).^2))/mean(ActualOutput);
-
-figure; hold on;
-title(['Training Data July 2012, Order of AR = ' num2str(OrderOfAR)]);
-h1 = plot(1:length(ActualOutput), ActualOutput, 'b');
-h2 = plot(1:length(ActualOutput), rtreeOutput, 'r');
-h3 = plot(1:length(ActualOutput), brtreeOutput, '--g');
-legend([h1, h2, h3], 'Actual', ['Single Tree ' num2str(rtreeNRMSE,2)], ['Boosted Tree ' num2str(brtreeNRMSE,2)])
-
-figure; hold on;
-title(['Training Data July 2012, Order of AR = ' num2str(OrderOfAR)]);
-h1 = plot(TrainingOutput, TrainingOutput, '--b', 'MarkerSize', 2);
-h2 = plot(TrainingOutput, rtreeOutput, 'dr', 'MarkerSize', 2);
-h3 = plot(TrainingOutput, brtreeOutput, '+g', 'MarkerSize', 2);
-xlabel('Actual Zone Temp. [deg C]');
-ylabel('Predicted Zone Temp. [deg C]');
-legend([h2, h3], ['Single Tree ' num2str(rtreeNRMSE,2)], ['Boosted Tree ' num2str(brtreeNRMSE,2)], 'Location', 'Best')
+% ActualOutput = TrainingOutput;
+% 
+% rtreeOutput = predict(prunedrtree, TrainingInput);
+% brtreeOutput = predict(brtree, TrainingInput);
+% 
+% rtreeNRMSE = sqrt(mean((rtreeOutput-ActualOutput).^2))/mean(ActualOutput);
+% brtreeNRMSE = sqrt(mean((brtreeOutput-ActualOutput).^2))/mean(ActualOutput);
+% 
+% figure; hold on;
+% title(['Training Data July 2012, Order of AR = ' num2str(OrderOfAR)]);
+% h1 = plot(1:length(ActualOutput), ActualOutput, 'b');
+% h2 = plot(1:length(ActualOutput), rtreeOutput, 'r');
+% h3 = plot(1:length(ActualOutput), brtreeOutput, '--g');
+% legend([h1, h2, h3], 'Actual', ['Single Tree ' num2str(rtreeNRMSE,2)], ['Boosted Tree ' num2str(brtreeNRMSE,2)])
+% 
+% figure; hold on;
+% title(['Training Data July 2012, Order of AR = ' num2str(OrderOfAR)]);
+% h1 = plot(TrainingOutput, TrainingOutput, '--b', 'MarkerSize', 2);
+% h2 = plot(TrainingOutput, rtreeOutput, 'dr', 'MarkerSize', 2);
+% h3 = plot(TrainingOutput, brtreeOutput, '+g', 'MarkerSize', 2);
+% xlabel('Actual Zone Temp. [deg C]');
+% ylabel('Predicted Zone Temp. [deg C]');
+% legend([h2, h3], ['Single Tree ' num2str(rtreeNRMSE,2)], ['Boosted Tree ' num2str(brtreeNRMSE,2)], 'Location', 'Best')

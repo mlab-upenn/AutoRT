@@ -61,12 +61,13 @@ InputData{end+1}.Name = 'PERIMETER_TOP_ZN_3:Zone Air Temperature [C](TimeStep)';
 InputData{end+1}.Name = 'PERIMETER_TOP_ZN_4:Zone Air Temperature [C](TimeStep)';
 InputData{end+1}.Name = 'TOPFLOOR_PLENUM:Zone Air Temperature [C](TimeStep)';
 
-
 for idx = 1:size(InputData,2)
     for idy = 1:size(RawDataTrain,2)
         if strcmp(RawDataTrain{1,idy}, InputData{idx}.Name)
+            
             InputData{idx}.TrainData = RawDataTrain(StartIndex:end,idy);
             InputData{idx}.TestData = RawDataTest(StartIndex:end,idy);
+            
         end
     end
 end
@@ -134,6 +135,8 @@ end
 TrainingOutput = cell2mat(OutputData{1}.TrainData);
 TestingOutput = cell2mat(OutputData{1}.TestData);
 
+TrainingInput(:,8) = round(TrainingInput(:,8),2);
+TestingInput(:,8) = round(TestingInput(:,8),2);
 kWTree.TrainingInput = TrainingInput;
 kWTree.TrainingOutput = TrainingOutput;
 kWTree.TestingInput = TestingInput;
@@ -280,7 +283,8 @@ for OutputVarIdx = 1:NoOfZones
     
     TrainingOutput = cell2mat(OutputData{1}.TrainData);
     TestingOutput = cell2mat(OutputData{1}.TestData);
-    
+    TrainingInput(:,8) = round(TrainingInput(:,8),2);
+    TestingInput(:,8) = round(TestingInput(:,8),2);
     ThermalTree{OutputVarIdx}.TrainingInput = TrainingInput;
     ThermalTree{OutputVarIdx}.TrainingOutput = TrainingOutput;
     ThermalTree{OutputVarIdx}.TestingInput = TestingInput;
@@ -293,52 +297,60 @@ end
 clearvars -except kWTree ThermalTree TimeStep ARinInput OrderOfAR NoOfZones
 
 %% Fit kW trees
+catcol = [6,7,8];
+leafsize = 15;
 
 % 1) Single tree
-kWTree.singletree = fitrtree(kWTree.TrainingInput, kWTree.TrainingOutput, 'MinLeafSize',50);
-[~,~,~,bestLevel] = cvloss(kWTree.singletree , 'SubTrees', 'all', 'KFold', 5);
-kWTree.prunedstree = prune(kWTree.singletree, 'Level', bestLevel);
-% view(prunedtree, 'Mode', 'graph');
+kWTree.singletree = fitrtree(kWTree.TrainingInput, kWTree.TrainingOutput, 'MinLeafSize', leafsize, 'CategoricalPredictors', catcol);
 
 % 2) Boosted tree
-kWTree.boosttree = fitensemble(kWTree.TrainingInput, kWTree.TrainingOutput, 'LSBoost', 500, 'Tree');
+kWTree.boosttree = fitensemble(kWTree.TrainingInput, kWTree.TrainingOutput,...
+    'LSBoost', 500, 'Tree', 'CategoricalPredictors', catcol, 'LearnRate', 0.1);
 
-clearvars -except kWTree ThermalTree TimeStep ARinInput OrderOfAR NoOfZones
+% 3) Random Forest
+kWTree.rforest = TreeBagger(500, kWTree.TrainingInput, kWTree.TrainingOutput,...
+    'Method', 'regression', 'OOBPred', 'On', 'OOBVarImp', 'on',...
+    'CategoricalPredictors', catcol, 'MinLeaf', leafsize);
+
+clearvars -except kWTree ThermalTree TimeStep ARinInput OrderOfAR NoOfZones catcol leafsize
 %% Fit thermal trees
 
 for OutputVarIdx = 1:NoOfZones
     
     % 1) Single tree
     ThermalTree{OutputVarIdx}.singletree = fitrtree(ThermalTree{OutputVarIdx}.TrainingInput, ThermalTree{OutputVarIdx}.TrainingOutput,...
-        'MinLeafSize',50);
-    [~,~,~,bestLevel] = cvloss(ThermalTree{OutputVarIdx}.singletree, 'SubTrees', 'all', 'KFold', 5);
-    ThermalTree{OutputVarIdx}.prunedstree = prune(ThermalTree{OutputVarIdx}.singletree, 'Level', bestLevel);
-    % view(prunedtree, 'Mode', 'graph');
+        'MinLeafSize', leafsize, 'CategoricalPredictors', catcol);
     
     % 2) Boosted tree
     ThermalTree{OutputVarIdx}.boosttree = fitensemble(ThermalTree{OutputVarIdx}.TrainingInput, ThermalTree{OutputVarIdx}.TrainingOutput,...
-        'LSBoost', 500, 'Tree');
+        'LSBoost', 500, 'Tree', 'CategoricalPredictors', catcol, 'LearnRate', 0.1);
+    
+    % 3) Random Forest
+    ThermalTree{OutputVarIdx}.rforest = TreeBagger(500, ThermalTree{OutputVarIdx}.TrainingInput, ThermalTree{OutputVarIdx}.TrainingOutput,...
+        'Method', 'regression', 'OOBPred', 'On', 'OOBVarImp', 'on',...
+        'CategoricalPredictors', catcol, 'MinLeaf', leafsize);
     
 end
 
 %% Select a day for DR Event from 2:31 (data from day 1 will be used for the lag variabales)
-clearvars -except kWTree ThermalTree TimeStep ARinInput OrderOfAR NoOfZones
+clearvars -except kWTree ThermalTree TimeStep ARinInput OrderOfAR NoOfZones catcol leafsize
 
-DRDay = 5;
-DRStartHour = 14;
-DEEndHour = 18;
+DRDay = 16;
+DRStartHour = 15;
+DEEndHour = 16;
 DREventRange = (DRDay-1)*(60/TimeStep*24)+60/TimeStep*DRStartHour+1:(DRDay-1)*(60/TimeStep*24)+60/TimeStep*DEEndHour;
 
 %% Specify control strategies here
 
 NoOfControlStrat = 3;
 ControlStrategy = cell(1,NoOfControlStrat);
-% ControlStrategy{1} = [9*ones(length(DREventRange),1), 26*ones(length(DREventRange),1), 0.5*ones(length(DREventRange),1)];
+
 ControlStrategy{1} =  kWTree.TestingInput(DREventRange,11:13);
-ControlStrategy{2} =  kWTree.TestingInput(DREventRange,11:13);
-ControlStrategy{3} =  kWTree.TestingInput(DREventRange,11:13);
-% ControlStrategy{2} = [8*ones(length(DREventRange),1), 25*ones(length(DREventRange),1), 0.6*ones(length(DREventRange),1)];
-% ControlStrategy{3} = [7*ones(length(DREventRange),1), 27*ones(length(DREventRange),1), 0.7*ones(length(DREventRange),1)];
+ControlStrategy{2} =  kWTree.TestingInput(DREventRange,11:13) + [0*ones(length(DREventRange),1), 1*ones(length(DREventRange),1), 0*ones(length(DREventRange),1)];
+ControlStrategy{3} =  kWTree.TestingInput(DREventRange,11:13) + [0*ones(length(DREventRange),1), -1*ones(length(DREventRange),1), 0*ones(length(DREventRange),1)];
+% ControlStrategy{1} = [8*ones(length(DREventRange),1), 24.5*ones(length(DREventRange),1), 0.5*ones(length(DREventRange),1)];
+% ControlStrategy{2} = [8*ones(length(DREventRange),1), 25.5*ones(length(DREventRange),1), 0.5*ones(length(DREventRange),1)];
+% ControlStrategy{3} = [8*ones(length(DREventRange),1), 26.5*ones(length(DREventRange),1), 0.5*ones(length(DREventRange),1)];
 
 %% Predict results during DR Event step by step for all the strategies
 
@@ -360,6 +372,7 @@ for ControlIdx = 1:NoOfControlStrat
     ZoneTemp = zeros(length(DREventRange), NoOfZones);
     BuildPower = zeros(length(DREventRange), 1);
     
+    
     for DRidx = 1:length(DREventRange)
         
         for OutputVarIdx = 1:NoOfZones
@@ -375,7 +388,7 @@ for ControlIdx = 1:NoOfControlStrat
             ZoneTemp(DRidx,OutputVarIdx) = predict(ThermalTree{OutputVarIdx}.boosttree, TestZoneTemp);
             
             % Update zone temp in kW tree inputs
-            kWTree.DRTestingInput(DREventRange(DRidx),end-OrderOfAR(1+ARinInput*15)-19+OutputVarIdx) = ZoneTemp(DRidx, OutputVarIdx);
+            kWTree.DRTestingInput(DREventRange(DRidx),end-OrderOfAR*(1+ARinInput*15)-19+OutputVarIdx) = ZoneTemp(DRidx, OutputVarIdx);
             
             % Update zone temp in thermal trees inputs
             for idi = 1:OrderOfAR
@@ -428,7 +441,7 @@ h1 = plot(1:length(DREventRange), BuildPowerAllStrat{1}, 'b', 'MarkerSize', 2);
 h2 = plot(1:length(DREventRange), BuildPowerAllStrat{2}, 'r', 'MarkerSize', 2);
 h3 = plot(1:length(DREventRange), BuildPowerAllStrat{3}, 'g', 'MarkerSize', 2);
 h4 = plot(1:length(DREventRange), kWTree.TestingOutput(DREventRange), '--c', 'MarkerSize', 2);
-legend([h1, h2, h3, h4], 'S1', 'S2', 'S3', 'EnergyPlus', 'Location', 'Best')
+legend([h1, h2, h3, h4], 'S1', 'S2', 'S3', 'EP', 'Location', 'Best')
 
 % figure; hold on;
 % plot(brtreeOutput(DREventRange), 'r')
