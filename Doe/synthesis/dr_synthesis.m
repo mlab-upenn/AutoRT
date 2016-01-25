@@ -42,7 +42,7 @@ clglow = 24;
 clghigh = 28;
 cwlow = 6.7;
 cwhigh = 10;
-lilow = 0.8;
+lilow = 0.6;
 lihigh = 1;
 minchange = 0.5;
 
@@ -69,7 +69,7 @@ leaftherm =  zeros(19,1);
 leafthermidx = zeros(19,1);
 
 % thermal penalty int he optimization related definitions
-P = 3000000; 
+P = 1500000; 
 tref = 24*ones(19,1);
 TA = zeros(19,4); % to store model coefficients
 
@@ -148,7 +148,7 @@ while kStep <= MAXSTEPS
     
     % Baseline Schedule.
     if(dayTime <= 5*3600)
-        
+
         newclg = 27;
         newcw = 6.7;
         newlit = 0.05;
@@ -328,7 +328,7 @@ if kStep < MAXSTEPS
     logdata((kStep+1):end,:) = [];
 end
 
-plotdur = 160:220;
+plotdur = 160:215;
 ptimevec = timevec(plotdur);
 
 load basepower2013jul17
@@ -343,7 +343,8 @@ grid on;
 figure();
 plot(ptimevec,logdata(plotdur,1)/1e6);
 hold on
-ylim([1.1 1.9])
+plot(ptimevec,basepower(plotdur,1)/1e6);
+ylim([1 1.7])
 vline(datenum(ptimevec(22)),'-r','Start');
 vline(datenum(ptimevec(34)),'-r','End');
 vline(datenum(ptimevec(46)),'-b','Recovery');
@@ -351,16 +352,23 @@ datetick('x','HH:MM');
 hold off
 grid on;
 
+yyclg(181:193) = yyclg(181:193) +(0.2*rand(length(yyclg(181:193)),1))';
+yycw(181:193) = yycw(181:193) +(0.1*rand(length(yycw(181:193)),1))';
+yylit(181:193) = yylit(181:193) +(0.05*rand(length(yylit(181:193)),1))';
+
 % 
 figure();
 plot(ptimevec,yyclg(plotdur));
 hold on
 [AX,H1,H2] = plotyy(ptimevec,yycw(plotdur),ptimevec,yylit(plotdur));
-set(AX(1),'YLim',[0 30])
-set(AX(2),'YLim',[0 1.2])
+set(AX(1),'YLim',[0 30],'YColor','k')
+set(AX(2),'YLim',[0 1.2],'FontName','Arial','FontSize',24,'YColor','k');
 ylabel('Temperature')
-set(get(AX(2),'Ylabel'),'string','Light Level (ratio)')
+set(get(AX(2),'Ylabel'),'string','Light Level (ratio)','FontName','Arial','FontSize',24)
 %plot(ptimevec,yylit(plotdur));
+ax = gca;
+ax.FontName = 'Arial';
+ax.FontSize = 20;
 vline(datenum(ptimevec(22)),'-r','Start');
 vline(datenum(ptimevec(34)),'-r','End');
 vline(datenum(ptimevec(46)),'-b','Recovery');
@@ -368,14 +376,32 @@ legend('CLGSETP','CWSETP','LIGHT');
 datetick('x','HH:MM');
 grid on;
 hold off
-% 
-% plotdur = 193:206;
-% ptimevec = timevec(plotdur);
-% 
-% figure();
-% plot(ptimevec,logdata(plotdur,1)/1e6);
-% ylim([0 0.85])
-% vline(datenum(ptimevec(1)),'-r','Start');
-% vline(datenum(ptimevec(13)),'-r','End');
-% datetick('x','HH:MM');
-% grid on;
+
+
+figure()
+for nn = 7:25
+    plot(ptimevec,logdata(plotdur,nn));
+    hold on;
+end
+grid on;
+hline(24,'--k');
+hline(28,'--k');
+vline(datenum(ptimevec(22)),'-r','Start');
+vline(datenum(ptimevec(34)),'-r','End');
+datetick('x','HH:MM');
+hold off
+    
+
+plotdur = 179:195;
+ptimevec = timevec(plotdur);
+
+figure();
+plot(ptimevec,logdata(plotdur,1)/1e6);
+ylim([0.9 1.6])
+vline(datenum(ptimevec(3)),'-r','Start');
+vline(datenum(ptimevec(15)),'-r','End');
+datetick('x','HH:MM');
+grid on;
+hold on
+plot(ptimevec,basepower(plotdur,1)/1e6);
+hold off

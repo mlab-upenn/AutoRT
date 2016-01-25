@@ -89,9 +89,23 @@ colnames={'boiler','chws1','chws2','dow','htgsetp','hwsetp'...
     ,'outdry','outhum','outwet','tod','windir','winspeed'};
 catcol = [4,10];
 
+holdout = 0.8;
+total_samples = length(XDR);
+
+train_samples = floor(holdout*total_samples);
+
+
+XDRtrain = XDR(1:train_samples, :);
+XDRctrltrain = XDRctrl(1:train_samples, :);
+OutputVarstrain = OutputVars(1:train_samples,:);
+
+XDRtest = XDR(train_samples+1:end,:);
+XDRctrltest = XDRctrl(train_samples+1:end,:);
+OutputVarstest = OutputVars(train_samples+1:end,:);
 
 disp('Done.');
 
+%{
 %% Start Tree Regression
 disp('Learning Regression Trees ...');
 
@@ -111,8 +125,8 @@ minleaf = 5;   % minimium number of leaf node observations
 warning off stats:LinearModel:RankDefDesignMat
 for jj = 1:size(OutputVars,2)
     
-    Xtrain = XDR;
-    Ytrain = OutputVars(:,jj);
+    Xtrain = XDRtrain;
+    Ytrain = OutputVarstrain(:,jj);
     
     lag_temp = lagmatrix(Ytrain,[1,2,3,4,5]);
     lag_temp_nanidx = find(isnan(lag_temp));
@@ -170,7 +184,7 @@ for jj = 1:size(OutputVars,2)
         thermal(jj).dr12(kk).mean = thermal(jj).toptree.NodeMean(leaf_index(kk));
         
         % the control variables sample values which contribute to this leaf (support)
-        thermal(jj).dr12(kk).xdata = {XDRctrl(thermal(jj).dr12(kk).leaves{1,1},:)};
+        thermal(jj).dr12(kk).xdata = {XDRctrltrain(thermal(jj).dr12(kk).leaves{1,1},:)};
         
         % the response variable value which contribute to this leaf
         thermal(jj).dr12(kk).ydata = {Ytrain(thermal(jj).dr12(kk).leaves{1,1})};
@@ -219,71 +233,38 @@ for jj = 1:size(OutputVars,2)
     close(h)
     
 end
+%}
 
+load compare_control.mat
 
+Yorig = OutputVarstest(:,12);
+lag_tempt = lagmatrix(Yorig,[1,2,3,4,5]);
+lag_temp_nanidxt = find(isnan(lag_tempt));
+lag_tempt(lag_temp_nanidxt) = 0;
 
-%% Resolve rank deficient linear models
-% train only between functional testing periods
+% Augment training matrix with lagged kw columns
+XDRtest = [XDRtest,lag_tempt];
 
-% todidx=find((EMScurrentTimeOfDayTimeStep>=15) & ...
-%     (EMScurrentTimeOfDayTimeStep<=17));
-%
-% Xtrain = XDR(todidx,:);
-% Xctrl = XDRctrl(todidx,:);
-% Ytrain = YDR(todidx);
-%
-% disp('Done.');
+leaftherm = predict(thermal(12).toptree,XDRtest);
 
-% %% Start Tree Regression
-% disp('Learning Regression Tree');
-%
-% minleaf = 5;   % minimium number of leaf node observations
-% tic
-% drtree2k12tod = fitrtree(Xtrain,Ytrain,'PredictorNames',colnames,'ResponseName','Total Power','CategoricalPredictors',catcol,'MinLeafSize',minleaf);
-% toc
-%
-% % predict on training and testing data and plot the fits
-% [Yfittod,nodetod] = resubPredict(drtree2k12tod);
-%
-% % RMSE
-% [a,b]=rsquare(Ytrain,Yfittod);
-% fprintf('Training RMSE(W): %.2f, R2: %.3f, RMSE/peak: %.4f, CV: %.2f \n\n'...
-%     ,b,a,(b/max(Ytrain)),(100*b/mean(Ytrain)));
-%
-% % Need to find the indices of the nodes of the tree which are
-% % leaves i.e zero children in the left and right branches of the node.
-%
-% leaf_index = find((drtree2k12.Children(:,1)==0)&(drtree2k12.Children(:,2)==0));
-% numleafs = length(leaf_index);
-% fprintf('The tree has %d leaf nodes \n',numleafs);
-%
-% %{
-%     For each leaf of the tree:
-%         1) Obtain the indices and hence the values of the data points in the
-%         partition
-%         2) Obtain and store the prediction from tree 1 ( use NodeMean)
-% %}
-%
-%
-% for ii=1:numleafs
-%
-%     % find indices of samples which end up in this leaf
-%     dr12tod(ii).leaves = {find(nodetod==leaf_index(ii))};
-%
-%     % mean prediction at this leaf
-%     dr12tod(ii).mean = drtree2k12tod.NodeMean(leaf_index(ii));
-%
-%     % the control variables sample values which contribute to this leaf (support)
-%     dr12tod(ii).xdata = {Xctrl(dr12tod(ii).leaves{1,1},:)};
-%
-%     % the response variable value which contribute to this leaf
-%     dr12tod(ii).ydata = {Ytrain(dr12tod(ii).leaves{1,1})};
-%
-%     % train a linear model
-%     tbl = table(dr12tod(ii).xdata{1,1}(:,1),dr12tod(ii).xdata{1,1}(:,2)...
-%         ,dr12tod(ii).xdata{1,1}(:,3),dr12tod(ii).ydata{1,1},'VariableNames'...
-%         ,{'CLG','CHWS','LIT','kW'});
-%     dr12tod(ii).mdl =  fitlm(tbl,'kW~CLG+CHWS+LIT');
-%     %dr12(ii).mdl = {LinearModel.fit(dr12(ii).xdata{1,1},dr12(ii).ydata{1,1})};
-%
-% end
+Yout = zeros(length(leaftherm),1);
+
+for nn = 1:length(leaftherm)
+for thermidx = 1:length(thermal(12).dr12)
+    if(leaftherm(nn) == thermal(12).dr12(thermidx).mean)
+        break;
+    end
+end
+
+clgset = XDRctrltest(nn,1);
+cwset =  XDRctrltest(nn,2);
+litset =  XDRctrltest(nn,3);
+
+% thermidx is the leaf node
+ Yout(nn) = thermal(12).dr12(thermidx).mdl{1,1}.Coefficients{1,1} + ...
+            (thermal(12).dr12(thermidx).mdl{1,1}.Coefficients{2,1}*clgset) + ...
+            (thermal(12).dr12(thermidx).mdl{1,1}.Coefficients{3,1}*cwset) + ...
+            (thermal(12).dr12(thermidx).mdl{1,1}.Coefficients{4,1}*litset);
+
+end
+
